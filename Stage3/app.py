@@ -11,7 +11,9 @@ def index():
 
 @app.route('/save' ,methods=['POST'])
 def save():
-    return redirect(url_for('index'))
+    response = make_response(redirect(url_for('index')))
+    response.set_cookie('character', json.dumps(dict(request.form.items())))
+    return response
 
 
 if __name__ == '__main__':
