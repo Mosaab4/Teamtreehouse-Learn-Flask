@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 
-{% block title %} Howdy! {% endblock %}
+{% block title %} Howdy! | {{super()}}{% endblock %}
+<!--super function bring the original title from layout.html-->
 
 {% block content %}
     <h1>Hello from {{name}}</h1>
