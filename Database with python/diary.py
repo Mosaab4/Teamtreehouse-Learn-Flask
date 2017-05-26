@@ -4,6 +4,8 @@ from peewee import *
 from collections import OrderedDict
 import datetime
 import sys #to capture text with new line , not to exit when Enter
+import os
+
 
 
 
@@ -23,12 +25,16 @@ def initialize():
     db.connect()
     db.create_tables([Entry], safe=True)
 
+def clear():
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 def menu_loop():
     """show the menu"""
     choice = None 
 
     while choice != 'q':
+        clear()
+
         print("Enter 'q' to quit.")
 
         for key,value in menu.items():
@@ -38,6 +44,7 @@ def menu_loop():
         choice = raw_input('Action: ').lower().strip() #lowercase and remove spaces from the input
         
         if choice in menu:
+            clear()
             menu[choice]()
 
 
@@ -62,10 +69,15 @@ def view_entries(search_query = None):
 
     for entry in entries:
         timestamp = entry.timestamp.strftime('%A %B %d, %Y %I:%M%p')#day month number , year hour minute am/pm
+
+        clear()
+        
         print(timestamp)
         print('=' *len(timestamp))
         print(entry.content)
         
+        print('\n\n' + '='*len(timestamp))
+
         print('n) next entry')
         print('d) delete entry')
         print('q) return to main menu')
