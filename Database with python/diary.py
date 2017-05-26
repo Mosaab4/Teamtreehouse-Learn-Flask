@@ -53,9 +53,12 @@ def add_entry():
             print('Saved successfully!')
 
 
-def view_entries():
+def view_entries(search_query = None):
     """View previous entries"""
     entries = Entry.select().order_by(Entry.timestamp.desc())
+
+    if search_query :
+        entries = entries.where(Entry.content.contains(search_query))
 
     for entry in entries:
         timestamp = entry.timestamp.strftime('%A %B %d, %Y %I:%M%p')#day month number , year hour minute am/pm
@@ -72,7 +75,8 @@ def view_entries():
             break
 
 def search_entries():
-    
+    """Search entries for a string"""
+    view_entries(raw_input('Search query: '))
 def delete_entry(entry):
     """Delete an entry"""
 
