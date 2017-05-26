@@ -44,6 +44,15 @@ def menu_loop():
 def add_entry():
     """add an entry"""
 
+    print("Enter your entry. Press ctrl+d when finished")
+    data = sys.stdin.read().strip() #read text with new lines , and strip spaces from sides
+
+    if data :
+        if raw_input('Save entry? [Yn]').lower() != 'n':
+            Entry.create(content = data )
+            print('Saved successfully!')
+
+
 def view_entries():
     """View previous entries"""
 
