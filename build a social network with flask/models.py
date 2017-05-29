@@ -5,7 +5,7 @@ from flask_login import UserMixin
 from peewee import *
 
 
-DATABASE SqliteDatabase('social.db')
+DATABASE = SqliteDatabase('social.db')
 
 class User(UserMixin , Model):
     username = CharField(unique = True)
@@ -19,10 +19,10 @@ class User(UserMixin , Model):
         order_by = ('-joined_at',) #- for showing the newest members
 
 
-    @classmethod
-    def create_user(cls , username ,email, password , admin = False):
+    @classmethod #if we don't have the decorator ,we have to creat a user instance to call the function create_user
+    def create_user(cls , username ,email, password , admin = False): #cls refered to user class
         try :
-            cls.create(
+            cls.create(#cls refered to user.create
                 username = username ,
                 email = email ,
                 password =generate_password_hash(password),
