@@ -1,4 +1,4 @@
-from flask import Flask ,g
+from flask import Flask ,g ,render_template
 
 from flask_login import LoginManager
 import models

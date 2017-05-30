@@ -16,8 +16,7 @@ class Entry(Model):
     content = TextField()
     #var char field had to have max_length
     timestamp = DateTimeField(default = datetime.datetime.now)
-    #now not now() because default see that it's a function
-    class Meta:
+    #now not now() to make the time when the model creatd not the time of running the program    class Meta:
         database = db
 
 def initialize():
