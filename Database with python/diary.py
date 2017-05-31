@@ -17,7 +17,7 @@ class Entry(Model):
     #var char field had to have max_length
     timestamp = DateTimeField(default = datetime.datetime.now)
     #now not now() to make the time when the model creatd not the time of running the program    class Meta:
-        database = db
+    database = db
 
 def initialize():
     """create the database and the table if they don't exist"""
