@@ -40,7 +40,7 @@ class RegisterForm(Form):
         validators = [
             DataRequired(),
             Length(min = 2),
-            EqualTo = ('password2', message = 'Passwords must match')
+            EqualTo('password2', message = 'Passwords must match')
         ])
 
     

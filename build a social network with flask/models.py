@@ -1,6 +1,6 @@
 import datetime
 
-from flask_bcrypt import generate_password_hash,
+from flask_bcrypt import generate_password_hash
 from flask_login import UserMixin
 from peewee import *
 
@@ -11,7 +11,7 @@ class User(UserMixin , Model):
     username = CharField(unique = True)
     email = CharField(unique = True)
     password = CharField(max_length = 100)
-    joined_at = DataTimeField(default = datetime.datetime.now ) #now not now() to make the time when the model creatd not the time of running the program
+    joined_at = DateTimeField(default = datetime.datetime.now ) #now not now() to make the time when the model creatd not the time of running the program
     is_admin = BooleanField(default = False)
 
     class Mete:
@@ -28,7 +28,7 @@ class User(UserMixin , Model):
                 password =generate_password_hash(password),
                 is_admin = admin
             )
-            except IntegrityError:
+        except IntegrityError:
                 raise ValueError("user allready exists")
 
 
