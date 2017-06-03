@@ -39,7 +39,7 @@ def before_request():
 def after_request(response):
     """close the database connection"""
     g.db.close()
-    return 
+    return response
     
 # -----------------------------------------------------------------
 
@@ -85,7 +85,8 @@ def login():
 @app.route('/logout')
 @login_required
 def logout():
-    login_user() #delete the cookie created by login_user(user) 
+    logout_user() #delete the cookie created by login_user(user) 
+    flash("You have been loged out ! come back soon!","success")
     return redirect(url_for('index'))
 
 @app.route('/')

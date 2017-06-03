@@ -1,14 +1,17 @@
+{% extends "layout.html" %}
 {% from 'macros.html' import render_field %}
-<form method="POST" action="" class="form">
-    {{ form.hidden_tag() }}
-    {% for field in form %}
 
-        {{ render_field(field) }}
+{% block content %}
+    <form method="POST" action="" class="form">
+        {{ form.hidden_tag() }}
+        {% for field in form %}
 
-    {% endfor %}
+            {{ render_field(field) }}
 
-    <button type="submit" id="submit">Login!</button>
-</form>
+        {% endfor %}
 
+        <button type="submit" id="submit">Login!</button>
+    </form>
+{% endblock %}
 
 

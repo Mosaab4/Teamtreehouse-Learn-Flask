@@ -31,8 +31,11 @@ class User(UserMixin , Model):
         except IntegrityError:
                 raise ValueError("user allready exists")
 
+class Post(Model):
+    
 
 def initialize():
-    DATABASE.connect()
+    #DATABASE.connect()
+    DATABASE.get_conn()
     DATABASE.create_tables([User] , safe = True)
     DATABASE.close()
