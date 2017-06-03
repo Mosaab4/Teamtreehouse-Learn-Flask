@@ -1,7 +1,7 @@
 from flask import (Flask ,g ,render_template , flash ,
                     redirect ,url_for)
 from flask_bcrypt import check_password_hash
-from flask_login import LoginManager , login_user
+from flask_login import LoginManager , login_user , logout_user,login_required
 
 import models
 import forms
@@ -17,12 +17,16 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
+# -----------------------------------------------------------------
+
 @login_manager.user_loader
 def load_user(userid):
     try :
         return models.User.get(models.User.id == userid)
     except models.DoesNotExist: #error from peewee 
         return None
+
+# -----------------------------------------------------------------
 
 @app.before_request
 def before_request():
@@ -35,8 +39,9 @@ def before_request():
 def after_request(response):
     """close the database connection"""
     g.db.close()
-    return response
-
+    return 
+    
+# -----------------------------------------------------------------
 
 
 @app.route('/register' , methods = ['GET','POST'])
@@ -68,7 +73,7 @@ def login():
             flash("Your email or password doesn't match" , "error")
         else:
             if check_password_hash(user.password ,form.password.data):
-                login_user(user)
+                login_user(user) #create a cookie with the information
                 flash("You'v been loged in","success")
 
                 return redirect(url_for('index'))
@@ -77,7 +82,12 @@ def login():
     
     return render_template('login.html' , form = form)
 
-    
+@app.route('/logout')
+@login_required
+def logout():
+    login_user() #delete the cookie created by login_user(user) 
+    return redirect(url_for('index'))
+
 @app.route('/')
 def index():
     return 'hey'
