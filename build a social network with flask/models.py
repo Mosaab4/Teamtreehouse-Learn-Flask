@@ -18,6 +18,13 @@ class User(UserMixin , Model):
         database = DATABASE 
         order_by = ('-joined_at',) #- for showing the newest members
 
+    def get_posts(self):
+        return Post.select().where(Post.user == self)
+
+    def get_stream(self):
+        return Post.select().where(
+            (Post.user == self )
+        )
 
     @classmethod #if we don't have the decorator ,we have to creat a user instance to call the function create_user
     def create_user(cls , username ,email, password , admin = False): #cls refered to user class
@@ -32,7 +39,16 @@ class User(UserMixin , Model):
                 raise ValueError("user allready exists")
 
 class Post(Model):
-    
+    timestamp = DateTimeField(default = datetime.datetime.now)
+    user = ForeignKeyField(
+        rel_model = User,
+        related_name = 'posts' #rel name is what the rel model call this model
+    )
+    content = TextField()
+
+    class Mete :
+        database = DATABASE
+        order_by = ('-timestamp',)
 
 def initialize():
     #DATABASE.connect()
