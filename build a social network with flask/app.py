@@ -106,11 +106,30 @@ def post():
 
 @app.route('/')
 def index():
-    return 'hey'
+    stream = models.Post.select().limit(100)
+    return render_template('stream.html', stream = stream)
+
+@app.route('/stream')
+@app.route('/stram/<username>')
+def stream(username = None):
+    template = 'stream.html'
+
+    if username and username != current_user.username:
+        user = models.User.select().where(models.User.username**username).get() # ** compatison without caring about cases , look S3V4
+        stream = user.posts.limit(100)
+    else:
+        stream = current_user.get_stream().limit(100)
+        user = current_user
+
+    if username :
+        template = 'user_stream.html'
+
+    return render_template(template , stream = stream , user = user)
 
 if __name__ == '__main__':
     models.initialize()
     try : 
+        
         models.User.create_user(
             username = 'mosaab',
             email = 'masaos@csmas.com',
