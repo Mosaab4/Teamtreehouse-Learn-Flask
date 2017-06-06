@@ -1,6 +1,6 @@
 from flask import jsonify , Blueprint
 
-from flask_restful import Resource , Api ,reqparse , inputs
+from flask_restful import (Resource , Api ,reqparse , inputs , marshal , marshal_with)
 
 import models
 
@@ -29,7 +29,7 @@ class ReviewList(Resource):
             location = ['form','json'],
             default = ''
         )
-        super(ReviewList,self).__init__() 
+        #super(ReviewList,self).__init__() 
     def get(self):
         return jsonify({'reviews' : [{'course':1, 'rating':5 }]})
 
