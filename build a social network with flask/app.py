@@ -32,7 +32,8 @@ def load_user(userid):
 def before_request():
     """connect database before eache request""" 
     g.db = models.DATABASE
-    g.db.connect()
+    #g.db.connect()
+    g.db.get_conn()
     g.user = current_user
 
 
@@ -126,10 +127,27 @@ def stream(username = None):
 
     return render_template(template , stream = stream , user = user)
 
+@app.route('/follow/<username>')
+@login_required
+def follow(username):
+    try :
+        to_user = models.User.get(models.User.username**username)
+    except models.DoesNotExist:
+        pass
+    else:
+        try :
+            models.Relationship.create(
+                from_user = g.user._get_current_object(),
+                to_user = to_user
+            )
+        except models.IntegrityError:
+            pass
+        else:
+            flash("You are now following {}!".format(to_user.username),"success")
+
 if __name__ == '__main__':
     models.initialize()
     try : 
-        
         models.User.create_user(
             username = 'mosaab',
             email = 'masaos@csmas.com',

@@ -14,7 +14,7 @@ class User(UserMixin , Model):
     joined_at = DateTimeField(default = datetime.datetime.now ) #now not now() to make the time when the model creatd not the time of running the program
     is_admin = BooleanField(default = False)
 
-    class Mete:
+    class Meta:
         database = DATABASE 
         order_by = ('-joined_at',) #- for showing the newest members
 
@@ -26,15 +26,36 @@ class User(UserMixin , Model):
             (Post.user == self )
         )
 
+    def following(self):
+        """the user we are following."""
+        return (
+            User.select().join(
+                Relationship,on = Relationship.to_user
+            ).where(
+                Relationship.from_user == self
+            )
+        )
+
+    def followers(self):
+        """Get users following the current user"""
+        return (
+            User.select().join(
+                Relationship, on = Relationship.from_user
+            ).where(
+                Relationship.to_user == self
+            )
+        )
+
     @classmethod #if we don't have the decorator ,we have to creat a user instance to call the function create_user
     def create_user(cls , username ,email, password , admin = False): #cls refered to user class
         try :
-            cls.create(#cls refered to user.create
-                username = username ,
-                email = email ,
-                password =generate_password_hash(password),
-                is_admin = admin
-            )
+            with DATABASE.transaction():
+                cls.create(#cls refered to user.create
+                    username = username ,
+                    email = email ,
+                    password =generate_password_hash(password),
+                    is_admin = admin
+                )
         except IntegrityError:
                 raise ValueError("user allready exists")
 
@@ -46,12 +67,21 @@ class Post(Model):
     )
     content = TextField()
 
-    class Mete :
+    class Meta :
         database = DATABASE
         order_by = ('-timestamp',)
 
+class Relationship():
+    from_user = ForeignKeyField(User, related_name = 'relationship')
+    to_user = ForeignKeyField(User, related_name='related_to')
+    
+    class Meta:
+        database = DATABASE
+        indexes = (
+            (('from_user','to_user'), True)
+        )
 def initialize():
     #DATABASE.connect()
     DATABASE.get_conn()
-    DATABASE.create_tables([User,Post] , safe = True)
+    DATABASE.create_tables([User,Post,Relationship] , safe = True)
     DATABASE.close()
