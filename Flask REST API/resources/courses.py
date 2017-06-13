@@ -22,8 +22,8 @@ def course_or_404(course_id):
     try:
         course = models.Course.get(models.Course.id == course_id)
 
-    except model.Course.DoesNotExist :
-        abort(404 ,message = "Course {} does not exist".format(course_id))
+    except models.Course.DoesNotExist :
+        abort(404)
 
     else:
         return course
@@ -50,16 +50,34 @@ class CourseList(Resource):
         courses = [marshal(add_reviews(course), course_field) for course in models.Course.select()]
         return {'courses': courses}
 
+    @marshal_with(course_field)
     def post(self):
         args = self.reqparse.parse_args()
         models.Course.create(**args)
-        return jsonify({'courses' : [{'title': 'Python Basics'}]})
+        return add_reviews(course)
         
 class Course(Resource):
+    def __init__(self):
+        self.reqparse = reqparse.RequestParser()
+        self.reqparse.add_argument(
+            'title',
+            required = True,
+            help = "No course title provided",
+            location = ['form' , 'json']
+        )
+
+        self.reqparse.add_argument(
+            'url',
+            required = True,
+            help = "No Course Url Provided",
+            location = ['form' , 'json'],
+            type = inputs.url
+        )
+
     @marshal_with(course_field) #instead of using marshal function
     def get(self , id):
-        return add_reviews(course_or_404(id))
-
+        #return marshal(add_reviews(course_or_404(id)) , course_field) using marshal
+        return add_reviews(course_or_404(id))   
     def put(self , id):
         return jsonify({'title': 'Python Basics'})
 
